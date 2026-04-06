@@ -3,130 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NBA Picks Demo</title>
+  <title>NBA Real Test</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0b1220;
-      --panel: #111a2b;
-      --panel-2: #162338;
-      --border: rgba(148,163,184,.16);
-      --text: #edf2f7;
+      --bg: #07101c;
+      --surface: #0f1a2b;
+      --surface-2: #162337;
+      --border: rgba(148,163,184,.18);
+      --text: #eef2ff;
       --muted: #94a3b8;
-      --blue: #60a5fa;
-      --green: #34d399;
-      --yellow: #fbbf24;
-      --red: #f87171;
+      --accent: #60a5fa;
+      --danger: #f87171;
+      --ok: #34d399;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Inter, system-ui, sans-serif;
-      background: linear-gradient(180deg, #08101d 0%, #0b1220 100%);
+      background: linear-gradient(180deg, #07101c 0%, #0b1220 100%);
       color: var(--text);
     }
     .wrap {
-      width: min(1100px, calc(100% - 24px));
+      width: min(1180px, calc(100% - 24px));
       margin: 0 auto;
-      padding: 24px 0 48px;
+      padding: 22px 0 40px;
     }
-    .hero {
-      margin-bottom: 20px;
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(17,26,43,.9);
+    .topbar, .analysis-box, .game-list, .panel-card, .pick-card {
       border: 1px solid var(--border);
+      background: rgba(15,26,43,.92);
+      border-radius: 18px;
     }
-    .hero h1 { margin: 0 0 8px; font-size: 28px; }
-    .hero p { margin: 0; color: var(--muted); line-height: 1.45; }
-    .app-grid {
+    .topbar {
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .topbar h1 { margin: 0 0 6px; font-size: 28px; }
+    .topbar p { margin: 0; color: var(--muted); }
+    .layout {
       display: grid;
-      gap: 18px;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      align-items: start;
     }
-    .game-card {
-      background: rgba(17,26,43,.92);
+    .game-list {
+      padding: 12px;
+      position: sticky;
+      top: 16px;
+    }
+    .status {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 12px;
+    }
+    .games-stack {
+      display: grid;
+      gap: 10px;
+    }
+    .game-btn {
+      width: 100%;
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      background: var(--surface-2);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
     }
-    .game-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-    .game-top h2 { margin: 0 0 4px; font-size: 22px; }
-    .time, .projection span, .eyebrow, .subhead { color: var(--muted); }
-    .projection {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 13px;
-      text-align: right;
-    }
-    .pick-card, .summary-box, .lineup-card {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
+    .game-btn:hover { border-color: rgba(96,165,250,.42); }
+    .matchup { font-weight: 800; margin-bottom: 4px; }
+    .meta, .muted, .eyebrow, .mini-title { color: var(--muted); }
+    .analysis-box { padding: 16px; min-height: 420px; }
+    .header-row h3 { margin: 0 0 4px; font-size: 24px; }
+    .pick-card {
+      margin: 14px 0;
       padding: 14px;
+      background: linear-gradient(180deg, #142238 0%, #0f1b2b 100%);
     }
-    .pick-card { margin-bottom: 14px; }
-    .pick-card.nobet { border-color: rgba(248,113,113,.26); }
-    .pick-main {
-      font-size: 24px;
-      font-weight: 800;
-      margin: 6px 0 10px;
-      color: #f8fafc;
-    }
-    .pick-meta {
+    .pick-card.no-bet { border-color: rgba(248,113,113,.26); }
+    .pick-main { font-size: 25px; font-weight: 900; margin: 8px 0 10px; }
+    .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 10px;
     }
-    .pick-meta span {
-      background: rgba(96,165,250,.15);
-      color: #dbeafe;
-      border-radius: 999px;
+    .chips span {
+      display: inline-flex;
+      align-items: center;
       padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(96,165,250,.14);
+      color: #dbeafe;
       font-size: 12px;
       font-weight: 700;
     }
-    .summary-box ul, .lineup-card ul {
-      margin: 10px 0 0;
-      padding-left: 18px;
-      color: #d7e0ea;
+    .derived {
+      margin-top: 8px;
+      color: #fde68a;
+      font-size: 13px;
     }
-    .summary-box p { margin: 8px 0 0; line-height: 1.45; }
-    .lineups-grid {
+    .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
       margin-top: 14px;
     }
-    .lineup-card h4 { margin: 0 0 8px; }
-    .derived {
-      margin-top: 8px;
-      color: var(--yellow);
-      font-size: 13px;
+    .panel-card {
+      padding: 14px;
+      background: var(--surface-2);
     }
-    @media (max-width: 700px) {
-      .game-top { flex-direction: column; }
-      .projection { text-align: left; }
-      .lineups-grid { grid-template-columns: 1fr; }
-      .pick-main { font-size: 21px; }
+    .panel-card h4 { margin: 0 0 10px; }
+    .line-item {
+      padding: 7px 0;
+      border-top: 1px solid rgba(148,163,184,.10);
+      color: #dce6f2;
+      font-size: 14px;
+    }
+    .line-item:first-of-type { border-top: 0; }
+    .line-item.empty { color: var(--muted); }
+    .loading {
+      padding: 20px;
+      color: var(--muted);
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .game-list { position: static; }
+      .stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <section class="hero">
-      <h1>Demo simple NBA picks</h1>
-      <p>Versión de prueba para validar render de picks, cuotas mínimas 1.50, líneas alternativas y lineups visibles sin depender todavía de toda la app real.</p>
+    <section class="topbar">
+      <h1>NBA real test</h1>
+      <p>App de prueba separada basada en la lógica de la principal: juegos reales de ESPN, cuotas de Odds API y lineups/availability para validar picks sin tocar producción.</p>
     </section>
-    <section id="app" class="app-grid"></section>
+
+    <section class="layout">
+      <aside class="game-list">
+        <p id="status" class="status">Cargando...</p>
+        <div id="games" class="games-stack"></div>
+      </aside>
+
+      <section id="analysis"></section>
+    </section>
   </main>
   <script src="./app.js"></script>
 </body>
